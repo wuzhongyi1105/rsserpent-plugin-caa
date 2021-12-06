@@ -14,10 +14,11 @@ import requests
 import time
 from bs4 import BeautifulSoup
 import arrow
+from rsserpent.utils import cached
 
 path = "/caa/html"
 
-
+@cached
 async def provider() -> dict:
     """Define an example data provider function, who will provide \
     the data needed by RSSerpent to create a RSS feed."""
@@ -49,9 +50,6 @@ async def provider() -> dict:
             url = 'https://www.caanet.org.cn/' + soup[g].attrs['href']
             url_list.append(url)
             pub_date = str(date[g]).replace('年', '-').replace('月', '-').replace('日', '').replace('<span>', '').replace('</span>', '')
-            print (pub_date)
-            test_date = arrow.get(pub_date)
-            print (test_date)
             date_list.append(pub_date)
             text_response = session.get(url)
             text = BeautifulSoup(text_response.text, "html.parser").select('.page_r')
