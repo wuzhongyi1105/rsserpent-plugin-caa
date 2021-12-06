@@ -70,7 +70,7 @@ async def provider() -> dict:
                 "title": title_list[r],
                 "description": text_list[r],
                 "link": url_list[r],
-                "pubDate": arrow.get(date_list[r]),
+                "pub_date": arrow.get(date_list[r]),
             }
             for r in range(len(title_list))
         ],
