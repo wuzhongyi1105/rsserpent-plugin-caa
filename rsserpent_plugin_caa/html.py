@@ -13,6 +13,7 @@ This module contains a demonstration for creating RSS feeds from HTML pages.
 import requests
 import time
 from bs4 import BeautifulSoup
+import arrow
 
 path = "/caa/html"
 
@@ -47,7 +48,10 @@ async def provider() -> dict:
             title_list.append( soup[g].string )
             url = 'https://www.caanet.org.cn/' + soup[g].attrs['href']
             url_list.append(url)
-            pub_date = time.strftime("%Y-%m-%d %H:%M:%S", time.strptime(date[g].string.replace('年', '-').replace('月', '-').replace('日', ''), "%Y-%m-%d"))
+            pub_date = str(date[g]).replace('年', '-').replace('月', '-').replace('日', '').replace('<span>', '').replace('</span>', '')
+            print (pub_date)
+            test_date = arrow.get(pub_date)
+            print (test_date)
             date_list.append(pub_date)
             text_response = session.get(url)
             text = BeautifulSoup(text_response.text, "html.parser").select('.page_r')
@@ -66,7 +70,7 @@ async def provider() -> dict:
                 "title": title_list[r],
                 "description": text_list[r],
                 "link": url_list[r],
-                "pubDate": date_list[r],
+                "pubDate": arrow.get(date_list[r]),
             }
             for r in range(len(title_list))
         ],
